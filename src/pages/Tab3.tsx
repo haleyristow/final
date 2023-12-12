@@ -1,25 +1,41 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
-import './Tab3.css';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList, IonItem, IonLabel } from '@ionic/react';
+import React, { useState, useEffect } from 'react';
+import './Tab1.css';
 
-const Tab3: React.FC = () => {
+const Tab1: React.FC = () => {
+  const [comments, setComments] = useState<any[]>([]);
+  const commentsURL = "https://dev-55-13.pantheonsite.io/wp-json/wp/v2/comments/";
+
+  useEffect(() => {
+    fetch(commentsURL)
+      .then(response => response.json())
+      .then(data => setComments(data))
+  }, [])
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Tab 3</IonTitle>
+          <IonTitle>Comments</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Tab 3</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <ExploreContainer name="Tab 3 page" />
+        <IonList id="comment-list">
+          {comments.map((comment, index) => (
+            <IonItem lines="inset" key={index}>
+              <IonLabel>
+                <h4>{comment.author_name}</h4>
+                <p dangerouslySetInnerHTML={{ __html: comment.content.rendered }}></p>
+                <p>Date: {comment.date}</p>
+                <a href={comment.link}>View Comment</a>
+              </IonLabel>
+            </IonItem>
+          ))}
+        </IonList>
       </IonContent>
     </IonPage>
   );
 };
 
-export default Tab3;
+export default Tab1;
+
